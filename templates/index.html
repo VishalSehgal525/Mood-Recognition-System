@@ -1,6 +1,6 @@
 {% extends "base.html" %} {% block content %}
 
-<h2>Image Classifier</h2>
+<h2>Uplift</h2>
 
 <div>
   <form id="upload-file" method="post" enctype="multipart/form-data">
@@ -24,9 +24,23 @@
     </div>
   </div>
 
-  <div class="loader" style="display: none"></div>
+  <div class="loader" id="first_loader" style="display: none"></div>
 
   <h3 id="result">
+    <span> </span>
+  </h3>
+
+  <div id="bro" style="display: none">
+    <div>
+      <button type="button" class="btn btn-primary btn-lg" id="btn-recommend">
+        Get Recommendations!
+      </button>
+    </div>
+  </div>
+
+  <div class="loader" id="second_loader" style="display: none"></div>
+
+  <h3 id="result2">
     <span> </span>
   </h3>
 </div>

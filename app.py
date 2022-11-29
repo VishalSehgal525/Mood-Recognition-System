@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import os
 from flask import Flask, request, render_template
 from tensorflow.keras.models import model_from_json
@@ -17,6 +18,8 @@ emotion_model.load_weights("./emotion_model.h5")
 
 print('Model loaded...')
 
+curr_mood = 'Neutral'
+
 def model_predict(img_path):
     emotion_dict = {
         0: "Angry", 
@@ -34,6 +37,13 @@ def model_predict(img_path):
     key = np.argmax(key)
     return emotion_dict[key]
 
+df = pd.read_csv('./Recommendations.csv')
+def recommendations(mood):
+    mood = np.array(mood, ndmin=1)
+    arr = np.array(['Angry', 'Disgusted', 'Fearful', 'Neutral', 'Sad', 'Surprised'])
+    val = np.where(mood==arr)[0][0]
+    return df[df['Mood'] == val].sample()['Link'].values[0]
+
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
@@ -49,6 +59,13 @@ def upload():
 
         preds = model_predict(file_path)
         return preds
+    return None
+
+@app.route('/recommend', methods=['GET', 'POST'])
+def recommend():
+    if request.method == 'POST':
+        features = [x for x in request.form.values()]
+        return recommendations(curr_mood)
     return None
 
 if __name__=='__main__':

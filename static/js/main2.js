@@ -3,7 +3,7 @@ $(document).ready(function () {
   $(".image-section").hide();
   $(".loader").hide();
   $("#result").hide();
-
+  mood = NaN;
   // Upload Preview
   function readURL(input) {
     if (input.files && input.files[0]) {
@@ -33,7 +33,7 @@ $(document).ready(function () {
 
     // Show loading animation
     $(this).hide();
-    $(".loader").show();
+    $("#first_loader").show();
 
     // Make prediction by calling api /predict
     $.ajax({
@@ -46,11 +46,37 @@ $(document).ready(function () {
       async: true,
       success: function (data) {
         // Get and display the result
-        $(".loader").hide();
+        $("#first_loader").hide();
         $("#result").fadeIn(600);
-        $("#result").text(" Result:  " + data);
+        $("#result").text("Mood Detected:  " + data);
+        mood = data;
         console.log("Success!");
+        console.log(mood);
+        $("#bro").show();
       },
     });
+    console.log(mood);
+    if (mood != "Happy") {
+      // Recommend
+      $("#btn-recommend").click(function () {
+        $("#second_loader").show();
+
+        $.ajax({
+          type: "POST",
+          url: "/recommend",
+          data: mood,
+          contentType: false,
+          cache: false,
+          processData: false,
+          async: true,
+          success: function (data) {
+            $("#second_loader").hide();
+            $("#result2").fadeIn(600);
+            $("#result2").text("Recommendation: " + data);
+            console.log("Success!");
+          },
+        });
+      });
+    }
   });
 });
